@@ -487,7 +487,6 @@ tokenize(B, S=#decoder{offset=O}) ->
 obj_new() ->
     {}.
 
-is_obj(Tuples) when is_tuple(Tuples) -> is_obj(tuple_to_list(Tuples));
 is_obj(Tuples) when is_list(Tuples) ->
     F = fun ({K, _}) when is_binary(K) ->
                 true;
