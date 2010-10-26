@@ -448,7 +448,7 @@ tokenize_number(B, eint1, S=#decoder{offset=O}, Acc) ->
             {{float, lists:reverse(Acc)}, S}
     end.
 
-tokenize(B, S=#decoder{offset=O}) ->
+tokenize(B, S=#decoder{offset=O, state=State}) ->
     case B of
         <<_:O/binary, C, _/binary>> when ?IS_WHITESPACE(C) ->
             tokenize(B, ?INC_CHAR(S, C));
@@ -476,7 +476,7 @@ tokenize(B, S=#decoder{offset=O}) ->
                                          orelse C =:= $- ->
             tokenize_number(B, S);
         <<_:O/binary>> ->
-            trim = S#decoder.state,
+            trim = State,
             {eof, S}
     end.
 
@@ -549,12 +549,7 @@ equiv_object(T1, T2) ->
 equiv_list([], []) ->
     true;
 equiv_list([V1 | L1], [V2 | L2]) ->
-    case equiv(V1, V2) of
-        true ->
-            equiv_list(L1, L2);
-        false ->
-            false
-    end.
+    equiv(V1, V2) andalso equiv_list(L1, L2).
 
 
 % ------------  TESTS ---------------------
